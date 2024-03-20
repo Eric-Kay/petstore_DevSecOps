@@ -13,7 +13,7 @@
         chdir: /var/lib/jenkins/workspace/petstore
 
     - name: tag image
-      command: docker tag petstore:latest sevenajay/petstore:latest 
+      command: docker tag petstore:latest erickay/petstore:latest 
 
     - name: Log in to Docker Hub
       community.docker.docker_login:
@@ -22,7 +22,7 @@
         password: dockerhub password/PAT
 
     - name: Push image
-      command: docker push sevenajay/petstore:latest
+      command: docker push erickay/petstore:latest
 
     - name: Run container
-      command: docker run -d --name pet1 -p 8081:8080 sevenajay/petstore:latest
+      command: docker run -d --name pet1 -p 8081:8080 erickay/petstore:latest
