@@ -29,3 +29,5 @@ Step 9 -- Master-slave Setup for Ansible and Kubernetes
 Launch an AWS T2 Large Instance. Use the image as Ubuntu. You can create a new key pair or use an existing one. Enable HTTP and HTTPS settings in the Security Group and open all ports (not best case to open all ports but just for learning purposes it’s okay).
 
 ![Screenshot 2024-03-31 225000](https://github.com/Eric-Kay/petstore_DevSecOps/assets/126447235/7c51f123-bdc1-4ad8-ab88-57e236b85356)
+
+## __STEP2:__  Install Jenkins, Docker and Trivy
