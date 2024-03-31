@@ -24,3 +24,5 @@ Step 7 -- Adding Ansible Repository in Ubuntu and install Ansible
 Step 8 -- Kuberenetes Setup
 
 Step 9 -- Master-slave Setup for Ansible and Kubernetes
+
+__STEP1:__Create an Ubuntu(22.04) T2 Large Instance
