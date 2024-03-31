@@ -31,3 +31,42 @@ Launch an AWS T2 Large Instance. Use the image as Ubuntu. You can create a new k
 ![Screenshot 2024-03-31 225000](https://github.com/Eric-Kay/petstore_DevSecOps/assets/126447235/7c51f123-bdc1-4ad8-ab88-57e236b85356)
 
 ## __STEP2:__  Install Jenkins, Docker and Trivy
+
+2A — To Install Jenkins
+2A — To Install Jenkins
+
+Connect to your console, and enter these commands to Install Jenkins
+```bash
+vi jenkins.sh #make sure run in Root (or) add at userdata while ec2 launch
+```
+```bash
+#!/bin/bash
+sudo apt update -y
+#sudo apt upgrade -y
+wget -O - https://packages.adoptium.net/artifactory/api/gpg/key/public | tee /etc/apt/keyrings/adoptium.asc
+echo "deb [signed-by=/etc/apt/keyrings/adoptium.asc] https://packages.adoptium.net/artifactory/deb $(awk -F= '/^VERSION_CODENAME/{print$2}' /etc/os-release) main" | tee /etc/apt/sources.list.d/adoptium.list
+sudo apt update -y
+sudo apt install temurin-17-jdk -y
+/usr/bin/java --version
+curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | sudo tee \
+                  /usr/share/keyrings/jenkins-keyring.asc > /dev/null
+echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
+                  https://pkg.jenkins.io/debian-stable binary/ | sudo tee \
+                              /etc/apt/sources.list.d/jenkins.list > /dev/null
+sudo apt-get update -y
+sudo apt-get install jenkins -y
+sudo systemctl start jenkins
+sudo systemctl status jenkins
+```
+
+```bash
+sudo chmod 777 jenkins.sh
+./jenkins.sh    # this will installl jenkins
+```
+
+Once Jenkins is installed, you will need to go to your AWS EC2 Security Group and open Inbound Port 8080 and 8090, 9000 for sonar, since Jenkins works on Port 8080.
+
+But for this Application case, we are running Jenkins on another port. so change the port to 8090 using the below commands.
+
+
+
