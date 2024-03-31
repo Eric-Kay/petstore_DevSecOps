@@ -143,3 +143,40 @@ Install below plugins
 3B — Configure Java and Maven in Global Tool Configuration
 Goto Manage Jenkins → Tools → Install JDK(17) and Maven3(3.6.0) → Click on Apply and Save
 
+3C — Create a Job
+Label it as PETSHOP, click on Pipeline and OK.
+![Screenshot 2024-03-31 233442](https://github.com/Eric-Kay/petstore_DevSecOps/assets/126447235/a5b5356a-b675-4a25-9949-804167fe413e)
+
+Enter this in Pipeline Script,
+
+```bash
+pipeline{
+    agent any
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
+    stages{
+        stage ('clean Workspace'){
+            steps{
+                cleanWs()
+            }
+        }
+        stage ('checkout scm') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Eric-Kay/petstore_DevSecOps.git'
+            }
+        }
+        stage ('maven compile') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+        stage ('maven Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+   }
+}
+```
