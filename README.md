@@ -81,5 +81,10 @@ sudo systemctl status jenkins
 
 ```
 
+Now, grab your Public IP Address
 
+```bash
+<EC2 Public IP Address:8090>
+sudo cat /var/lib/jenkins/secrets/initialAdminPassword
+```
 
