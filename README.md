@@ -112,6 +112,7 @@ Enter username and password, click on login and change password
 ```bash
 username admin
 password admin
+```
 
 2C — Install Trivy
 
