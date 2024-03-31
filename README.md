@@ -140,3 +140,6 @@ Install below plugins
 
 2 → SonarQube Scanner (Install without restart)
 
+3B — Configure Java and Maven in Global Tool Configuration
+Goto Manage Jenkins → Tools → Install JDK(17) and Maven3(3.6.0) → Click on Apply and Save
+
