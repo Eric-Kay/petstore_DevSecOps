@@ -128,4 +128,15 @@ sudo apt-get update
 sudo apt-get install trivy -y
 
 ```
+Next, we will log in to Jenkins and start to configure our Pipeline in Jenkins
+
+## __STEP3:__  Install Plugins like JDK, Sonarqube Scanner, Maven, OWASP Dependency Check
+3A — Install Plugin
+Goto Manage Jenkins →Plugins → Available Plugins →
+
+Install below plugins
+
+1 → Eclipse Temurin Installer (Install without restart)
+
+2 → SonarQube Scanner (Install without restart)
 
