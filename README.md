@@ -68,5 +68,18 @@ Once Jenkins is installed, you will need to go to your AWS EC2 Security Group an
 
 But for this Application case, we are running Jenkins on another port. so change the port to 8090 using the below commands.
 
+```bash
+sudo systemctl stop jenkins
+sudo systemctl status jenkins
+cd /etc/default
+sudo vi jenkins   #chnage port HTTP_PORT=8090 and save and exit
+cd /lib/systemd/system
+sudo vi jenkins.service  #change Environments="Jenkins_port=8090" save and exit
+sudo systemctl daemon-reload
+sudo systemctl restart jenkins
+sudo systemctl status jenkins
+
+```
+
 
 
