@@ -6,3 +6,21 @@ Hello friends, we will be deploying a Petshop Java Based Application. This is an
 We will be deploying our application in two ways, one using Docker Container and the other using K8S cluster.
 
 STEPS:
+
+Step 1 -- Create an Ubuntu(22.04) T2 Large Instance
+
+Step 2 -- Install Jenkins, Docker and Trivy
+
+Step 3 -- Install Plugins like JDK, Sonarqube Scanner, Maven, OWASP Dependency Check
+
+Step 4 -- Configure Sonar Server in Manage Jenkins
+
+Step 5 -- Install OWASP Dependency Check Plugins
+
+Step 6 -- Docker plugin and credential Setup
+
+Step 7 -- Adding Ansible Repository in Ubuntu and install Ansible
+
+Step 8 -- Kuberenetes Setup
+
+Step 9 -- Master-slave Setup for Ansible and Kubernetes
