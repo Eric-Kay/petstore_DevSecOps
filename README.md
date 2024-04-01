@@ -398,3 +398,58 @@ hostname worker
 bash
 clear
 ```
+Part 2 ————Both Master & Node ————
+
+```bash
+sudo apt-get update
+sudo apt-get install -y docker.io
+sudo usermod –aG docker Ubuntu
+newgrp docker
+sudo chmod 777 /var/run/docker.sock
+sudo curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+sudo tee /etc/apt/sources.list.d/kubernetes.list <<EOF
+deb https://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+sudo apt-get update
+sudo apt-get install -y kubelet kubeadm kubectl
+sudo snap install kube-apiserver
+```
+
+Part 3 ————— Master —————
+
+```bash
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16
+# in case your in root exit from it and run below commands
+mkdir -p $HOME/.kube
+sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+sudo chown $(id -u):$(id -g) $HOME/.kube/config
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+```
+
+———-Worker Node————
+
+```bash
+sudo kubeadm join <master-node-ip>:<master-node-port> --token <token> --discovery-token-ca-cert-hash <hash>
+```
+
++ Copy the config file to Jenkins master or the local file manager and save it.
++ Copy it and save it in documents or another folder save it as secret-file.txt
++ Install Kubernetes Plugin, Once it’s installed successfully then go to manage Jenkins –> manage credentials –> Click on Jenkins global –> add credentials.
+
+
+## __STEP9:__ Master-slave Setup for Ansible and Kubernetes.
+
+To communicate with the Kubernetes clients we have to generate an SSH key on the ansible master node and exchange it with K8s Master System.
+
+```bash
+ssh-keygen
+```
+
+Change the directory to .ssh and copy the public key (id_rsa.pub)
+
+```bash
+cd .ssh
+cat id_rsa.pub  #copy this public key
+```
+
+
