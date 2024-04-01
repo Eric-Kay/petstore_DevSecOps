@@ -258,6 +258,8 @@ Docker API
 
 docker-build-step
 
+and click on install without restart.
+
 + Now, goto Dashboard → Manage Jenkins → Tools → Add DockerHub Username and Password under Global Credentials.
 + Create a personal Access token from the docker hub which is used for ansible-playbook.
 
@@ -286,10 +288,18 @@ sudo apt install python3
 
 ### Install Ansible on Ubuntu 22.04 LTS
 
+Step1: Install Ansible on Ubuntu 22.04 LTS
+
+```bash
+sudo apt install ansible -y
+```
+```bash
+sudo apt install ansible-core -y
+```
+
+### Create an Inventory file in Ansible
 
 
 
 
 
-
-and click on install without restart.
