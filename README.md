@@ -222,3 +222,23 @@ stage("Sonarqube Analysis "){
            }
         }
 ```
+## __STEP5:__  Install OWASP Dependency Check Plugins.
+
++ Goto Dashboard → Manage Jenkins → Plugins → OWASP Dependency-Check. Click on it and install it without restart.
++ Goto to manage Jenkins → tools → Dependency-Check to configure OWASP Dependency.
+
+Now go configure → Pipeline and add this stage to your pipeline and build.
+
+```bash
+stage ('Build war file'){
+            steps{
+                sh 'mvn clean install -DskipTests=true'
+            }
+        }
+        stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./ --format XML ', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+```
