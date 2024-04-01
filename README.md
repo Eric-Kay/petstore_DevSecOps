@@ -180,3 +180,45 @@ pipeline{
    }
 }
 ```
+
+## __STEP4:__  Configure Sonar Server in Manage Jenkins
+
+Grab the Public IP Address of your EC2 Instance, Sonarqube works on Port 9000, so <Public IP>:9000. Goto your Sonarqube Server. Click on Administration → Security → Users → Click on Tokens and Update Token → Give it a name → and click on Generate Token
+
++ Goto Jenkins Dashboard → Manage Jenkins → Credentials → Add Secret Text.
++ Now, go to Dashboard → Manage Jenkins → System and configure system.
++ Goto Administration–> Configuration–>Webhooks and insert the jenkins URL.
+
+![Screenshot 2024-04-01 141650](https://github.com/Eric-Kay/petstore_DevSecOps/assets/126447235/2dee5554-a686-45f4-8520-70ceebb68bc6)
+
+Add details.
+
+```bash
+#in url section of quality gate
+<http://jenkins-public-ip:8090>/sonarqube-webhook/
+```
+Go to our Pipeline and add Sonarqube Stage in our Pipeline Script.
+
+```bash
+#under tools section add this environment
+environment {
+        SCANNER_HOME=tool 'sonar-scanner'
+    }
+# in stages add this
+stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Petshop \
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.projectKey=Petshop '''
+                }
+            }
+        }
+        stage("quality gate"){
+            steps {
+                script {
+                  waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token'
+                }
+           }
+        }
+```
