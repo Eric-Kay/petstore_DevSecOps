@@ -316,6 +316,33 @@ Ip of Jenkins
 Now write an Ansible playbook to create a docker image, tag it and push it to the docker hub, and finally, we will deploy it on a container using Ansible.
 
 ```bash
+- name: docker build and push
+  hosts: local  # Replace with the hostname or IP address of your target server
+  become: yes  # Run tasks with sudo privileges
 
+  tasks:
+    - name: Update apt package cache
+      apt:
+        update_cache: yes   
+
+    - name: Build Docker Image
+      command: docker build -t petstore .
+      args:
+        chdir: /var/lib/jenkins/workspace/petstore
+
+    - name: tag image
+      command: docker tag petstore:latest erickay/petstore:latest 
+
+    - name: Log in to Docker Hub
+      community.docker.docker_login:
+        registry_url: https://index.docker.io/v1/
+        username: erickay
+        password: dckr_pat_EbzrvA_OJDSPXRbSb-SFsHzytDE
+
+    - name: Push image
+      command: docker push erickay/petstore:latest
+
+    - name: Run container
+      command: docker run -d --name pet1 -p 8081:8080 erickay/petstore:latest
 ```
 
