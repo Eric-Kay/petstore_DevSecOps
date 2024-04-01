@@ -298,8 +298,24 @@ sudo apt install ansible-core -y
 ```
 
 ### Create an Inventory file in Ansible
+To add inventory you can create a new directory or add in the default Ansible hosts file
 
+```bash
+cd /etc/ansible
+sudo vi hosts
+```
++ Now go to the host file inside the Ansible server and paste the public IP of the Jenkins
+  
+```bash
+[local]#any name you want
+Ip of Jenkins
+```
++ install The Ansible plugin to integrate with Jenkins.
++ Add Credentials to invoke Ansible with Jenkins
 
+Now write an Ansible playbook to create a docker image, tag it and push it to the docker hub, and finally, we will deploy it on a container using Ansible.
 
+```bash
 
+```
 
