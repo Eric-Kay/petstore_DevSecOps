@@ -452,4 +452,173 @@ cd .ssh
 cat id_rsa.pub  #copy this public key
 ```
 
+Once you copy the public key from the Ansible master, move to the Kubernetes machine change the directory to .ssh and paste the copied public key under authorized_keys.
 
+```bash
+cd .ssh #on k8s master 
+sudo vi authorized_keys
+```
+
+Note: Now, insert or paste the copied public key into the new line. make sure don’t delete any existing keys from the authorized_keys file then save and exit.
+
+By adding a public key from the master to the k8s machine we have now configured keyless access. To verify you can try to access the k8s master and use the command as mentioned in the below format.
+
+```bash
+ssh ubuntu@<public-ip-k8s-master>
+```
+
+Verifying the above SSH connection from the master to the Kubernetes we have configured our prerequisites.
+Now go to the host file inside the Ansible server and paste the public IP of the k8s master.
+
+You can create a group and paste ip address below:
+
+```bash
+[k8s]#any name you want
+public ip of k8s-master
+```
+
+## Test Ansible Master Slave Connection
+
+Use the below command to check Ansible master-slave connections.
+
+```bash
+ansible -m ping k8s
+ansible -m ping all#use this one
+```
+
+let’s create a simple ansible playbook for Kubernetes deployment.
+
+```bash
+---
+- name: Deploy Kubernetes Application
+  hosts: k8s  # Replace with your target Kubernetes master host or group
+  gather_facts: yes  # Gather facts about the target host
+
+  tasks:
+    - name: Delete Deployment
+      command: kubectl delete -f /home/ubuntu/deployment.yaml
+
+    - name: Remove file
+      command: rm -rf /home/ubuntu/deployment.yaml
+      
+    - name: Copy deployment.yaml to Kubernetes master
+      copy:
+        src: /var/lib/jenkins/workspace/petstore/deployment.yaml  # Assuming Jenkins workspace variable
+        dest: /home/ubuntu/
+      become: yes  # Use sudo for copying if required
+      become_user: root  # Use a privileged user for copying if required
+
+    - name: Apply Deployment
+      command: kubectl apply -f /home/ubuntu/deployment.yaml
+```
+
+Now add the below stage to your pipeline.
+
+```bash
+stage('k8s using ansible'){
+            steps{
+                dir('Ansible') {
+                    script{
+                        ansiblePlaybook credentialsId: 'ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: '/etc/ansible/', playbook: 'kube.yaml'
+                    }
+                }
+            }
+        }
+```
+
+In the Kubernetes cluster give this command and copy the service/petstore port.
+
+```bash
+kubectl get all
+kubectl get svc
+```
+Insert the foolwing command on your browser: 
+
+```bash
+<slave-ip:serviceport(30699)>/jpetstore
+```
+Complete Pipeline
+
+```bash
+pipeline{
+    agent any
+    tools {
+        jdk 'jdk17'
+        maven 'maven3'
+    }
+    environment {
+        SCANNER_HOME=tool 'sonar-scanner'
+    }
+    stages{
+        stage ('clean Workspace'){
+            steps{
+                cleanWs()
+            }
+        }
+        stage ('checkout scm') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Eric-Kay/petstore_DevSecOps.git'
+            }
+        }
+        stage ('maven compile') {
+            steps {
+                sh 'mvn clean compile'
+            }
+        }
+        stage ('maven Test') {
+            steps {
+                sh 'mvn test'
+            }
+        }
+        stage("Sonarqube Analysis "){
+            steps{
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Petshop \
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.projectKey=Petshop '''
+                }
+            }
+        }
+        stage("quality gate"){
+            steps {
+                script {
+                  waitForQualityGate abortPipeline: false, credentialsId: 'Sonar-token' 
+                }
+           }
+        }
+        stage ('Build war file'){
+            steps{
+                sh 'mvn clean install -DskipTests=true'
+            }
+        }
+        stage("OWASP Dependency Check"){
+            steps{
+                dependencyCheck additionalArguments: '--scan ./ --format XML ', odcInstallation: 'DP-Check'
+                dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+            }
+        }
+        
+        stage('Ansibleplaybook Docker') {
+            steps {
+                dir('Ansible'){
+                  script {
+                         ansiblePlaybook become: true, credentialsId: 'ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: '/etc/ansible/', playbook: 'docker.yaml'
+                        }     
+                   }    
+              }
+        }
+        
+        stage('k8s using ansible'){
+            steps{
+                dir('Ansible') {
+                    script{
+                        ansiblePlaybook credentialsId: 'ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: '/etc/ansible/', playbook: 'kube.yaml'
+                    }
+                }
+            }
+        }
+      
+        
+   }
+}
+```
