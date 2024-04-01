@@ -242,3 +242,54 @@ stage ('Build war file'){
             }
         }
 ```
+
+
+## __STEP6:__ Docker plugin and credential Setup
+
+We need to install the Docker tool in our system, Goto Dashboard → Manage Plugins → Available plugins → Search for Docker and install these plugins
+
+Docker
+
+Docker Commons
+
+Docker Pipeline
+
+Docker API
+
+docker-build-step
+
++ Now, goto Dashboard → Manage Jenkins → Tools → Add DockerHub Username and Password under Global Credentials.
++ Create a personal Access token from the docker hub which is used for ansible-playbook.
+
+## __STEP7:__ Adding Ansible Repository in Ubuntu
+
+Step1:Update your system packages:
+
+```bash
+sudo apt-get update
+```
+Step 2: First Install Required packages to install Ansible.
+
+```bash
+sudo apt install software-properties-common
+```
+Step3: Add the ansible repository via PPA
+
+```bash
+sudo add-apt-repository --yes --update ppa:ansible/ansible
+```
+Step4: Install Python3 on the Ansible master
+
+```bash
+sudo apt install python3
+```
+
+### Install Ansible on Ubuntu 22.04 LTS
+
+
+
+
+
+
+
+and click on install without restart.
