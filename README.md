@@ -346,3 +346,55 @@ Now write an Ansible playbook to create a docker image, tag it and push it to th
       command: docker run -d --name pet1 -p 8081:8080 erickay/petstore:latest
 ```
 
+Add this stage to the pipeline to build and push it to the docker hub, and run the container.
+
+```bash
+stage('Install Docker') {
+            steps {
+                dir('Ansible'){
+                  script {
+                         ansiblePlaybook credentialsId: 'ssh', disableHostKeyChecking: true, installation: 'ansible', inventory: '/etc/ansible/', playbook: 'docker-playbook.yaml'
+                        }
+                   }
+              }
+        }
+```
+
+Now copy the IP address of Jenkins and paste it into the browser
+
+```bash
+<jenkins-ip:8081>/jpetstore
+```
+
+## __STEP8:__ Kuberenetes Setup
+Take-Two Ubuntu 20.04 instances one for k8s master and the other one for worker.
+
+Install Kubectl on Jenkins machine also.
+
+### Kubectl on Jenkins to be installed
+
+```bash
+sudo apt update
+sudo apt install curl
+curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+kubectl version --client
+```
+
+Part 1 ———-Master Node————
+
+```bash
+sudo su
+hostname master
+bash
+clear
+```
+
+———-Worker Node————
+
+```bash
+sudo su
+hostname worker
+bash
+clear
+```
